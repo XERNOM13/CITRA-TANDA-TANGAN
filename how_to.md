@@ -1,0 +1,63 @@
+## How to Run Program Deteksi Tanda Tangan
+
+Panduan ini akan memandu Anda dalam menyiapkan dan menjalankan skrip Python untuk deteksi tanda tangan pada gambar ijazah.
+
+### Pra-syarat
+
+Sebelum menjalankan skrip, pastikan Anda telah menginstal:
+
+*   **Python 3.x**
+*   **pip** (penginstal paket Python)
+*   **OpenCV (cv2)**
+*   **NumPy**
+*   **Matplotlib**
+
+### Instalasi
+
+1.  **Instal Library yang Diperlukan:**
+    Buka terminal atau command prompt Anda dan jalankan perintah berikut untuk menginstal semua library Python yang diperlukan:
+    ```bash
+    pip install opencv-python numpy matplotlib
+    ```
+
+### Persiapan
+
+1.  **Simpan Skrip:**
+    Simpan kode Python yang disediakan (yang berisi fungsi `uji_sistem_ttd` dan loop utama) ke dalam file bernama, misalnya, `signature_detector.py` di direktori proyek Anda.
+
+2.  **Tempatkan File Gambar:**
+    Buat subfolder bernama `images` (atau nama lain, ingatlah untuk memperbarui variabel `image_directory` skrip jika Anda mengubahnya) di direktori yang sama dengan skrip `signature_detector.py` Anda. Tempatkan semua file gambar `.jpg` ijazah yang ingin Anda analisis di dalam folder `images` ini.
+    
+    *Penting:* Jika Anda menempatkan gambar langsung di direktori yang sama dengan skrip, Anda mungkin perlu menyesuaikan jalur `os.listdir()` dalam skrip (misalnya, dari `/content/` menjadi `.` atau `./images/` jika Anda menggunakan subfolder).
+
+    *Contoh Struktur Direktori:*
+    ```
+    proyek_anda/
+    ├── signature_detector.py
+    └── images/
+        ├── ijazah1.jpg
+        ├── ijazah2.jpg
+        └── ...
+    ```
+
+### Menjalankan Program
+
+1.  **Buka Terminal:**
+    Navigasikan ke direktori proyek Anda di terminal atau command prompt.
+
+2.  **Eksekusi Skrip:**
+    Jalankan skrip Python menggunakan perintah berikut:
+    ```bash
+    python signature_detector.py
+    ```
+
+### Output yang Diharapkan
+
+*   Skrip akan mencetak pesan yang menunjukkan status pemrosesan setiap gambar.
+*   Untuk setiap gambar `.jpg` yang ditemukan, jendela `matplotlib` akan muncul (atau ditampilkan secara inline jika di IDE seperti VS Code dengan ekstensi yang sesuai) yang menunjukkan 4 versi area tanda tangan yang telah diproses:
+    1.  Area Potongan Asli
+    2.  Hasil Threshold Otsu
+    3.  Hasil Adaptive Threshold
+    4.  Hasil Pembersihan Morfologi
+*   Setiap plot akan memiliki judul utama yang menunjukkan nama file gambar, keputusan `SIGNATURE PRESENT` atau `SIGNATURE ABSENT`, dan persentase piksel foreground yang dihitung.
+*   Setelah memproses semua gambar, pesan ringkasan akan ditampilkan di terminal.
