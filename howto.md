@@ -1,0 +1,66 @@
+```markdown
+# Panduan Menjalankan Sistem Verifikasi Ijazah (How to Run)
+
+Dokumen ini menjelaskan langkah-langkah untuk menjalankan *pipeline* verifikasi ijazah otomatis (deteksi nomor ijazah dan status tanda tangan) menggunakan Google Colab.
+
+---
+
+## 📋 Prasyarat & Instalasi Dependensi
+
+Sebelum menjalankan program utama, pastikan sistem Colab Anda telah terpasang *engine* OCR Tesseract dan beberapa pustaka Python pendukung. Jalankan sel instalasi pertama di bagian paling atas notebook:
+
+```bash
+!apt-get install tesseract-ocr libtesseract-dev -y
+!pip install pytesseract pandas openpyxl
+```
+
+---
+
+## 🛠️ Langkah-Langkah Menjalankan Verifikasi
+
+### Langkah 1: Persiapkan Berkas Citra Ijazah
+1. Unggah berkas gambar ijazah yang ingin diverifikasi ke penyimpanan Colab Anda.
+2. Anda dapat menyeret (*drag & drop*) berkas gambar (format `.jpg`, `.png`, atau `.webp`) langsung ke panel file sebelah kiri di Google Colab.
+3. Salin jalur lokasi file (*file path*), misalnya: `/content/01_HighQuality_Enhanced.jpg`.
+
+### Langkah 2: Pahami Fungsi Utama Alur Program (*Pipeline*)
+Di dalam kode utama, terdapat tiga fungsi penting:
+* **`auto_rotate_image(img)`**: Otomatis mendeteksi jika dokumen Anda tersimpan miring atau menyamping (menggunakan pustaka Tesseract OSD), lalu memutarnya ke posisi tegak (*upright*) secara otomatis.
+* **`adjust_orientation_and_get_roi(img)`**: Mengidentifikasi apakah dokumen berorientasi **Landscape (Horizontal)** atau **Portrait (Vertikal)**, kemudian memotong area Nomor Ijazah dan Tanda Tangan secara presisi menggunakan koordinat dinamis.
+* **`process_certificate(image_path)`**: Fungsi utama untuk mengeksekusi seluruh alur pengolahan citra (*Enhancement*, Otsu Thresholding, Tesseract OCR, Analisis Morfologi Tanda Tangan) dan menampilkan visualisasi beserta hasil cetak akhir.
+
+### Langkah 3: Eksekusi Fungsi Pengujian
+Ubah argumen pemanggilan fungsi pada baris paling bawah kode program dengan jalur berkas gambar ijazah Anda:
+
+```python
+# Ganti dengan path ijazah Anda
+process_certificate('/content/nama_file_ijazah_anda.jpg')
+```
+
+Tekan tombol **Run (Tombol Putar)** pada sel kode untuk melihat hasilnya.
+
+---
+
+## 📊 Interpretasi Hasil Keluaran
+
+Setelah berhasil dieksekusi, sistem akan menyajikan dua jenis keluaran:
+
+### 1. Visualisasi Gambar (3 Panel Plot)
+* **Panel 1 (Citra Upright)**: Menampilkan ijazah asli yang sudah berhasil ditegakkan secara sempurna.
+* **Panel 2 (ROI Nomor Ijazah)**: Menampilkan hasil pemotongan (*crop*) wilayah nomor ijazah yang sudah dibinerkan (hitam-putih tajam) untuk siap dibaca oleh mesin OCR.
+* **Panel 3 (ROI TTD)**: Menampilkan hasil deteksi goresan tinta tanda tangan setelah melewati operasi morfologi hitam-putih.
+
+### 2. Laporan Konsol Verifikasi Akhir
+```text
+========================================
+ HASIL VERIFIKASI - Landscape (Horizontal) 
+========================================
+Nomor Ijazah : 571012022000056
+Tanda Tangan : PRESENT
+========================================
+```
+* **Nomor Ijazah**: Menunjukkan teks angka nomor ijazah yang berhasil dideteksi.
+* **Tanda Tangan**: 
+  * `PRESENT` jika tanda tangan terdeteksi.
+  * `ABSENT` jika area tanda tangan kosong (tidak bertanda tangan).
+```
